@@ -1,8 +1,8 @@
 #ifndef _LEDCTRL_H
 #define _LEDCTRL_H
 
+#include <colorSpace.h>
 #include <stdint.h>
-#include <pattern.h>
 #include "stm32f4xx_hal.h"
 
 #define MAX_LED 10

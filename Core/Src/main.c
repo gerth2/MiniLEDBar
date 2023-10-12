@@ -17,6 +17,8 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <colorSpace.h>
+#include <colorSpace.h>
 #include "main.h"
 #include "usb_device.h"
 
@@ -25,9 +27,7 @@
 
 #include <stdbool.h>
 #include <math.h>
-#include <LEDCtrl.h>
-#include <utils.h>
-#include <pattern.h>
+#include <LEDCtrl>
 
 
 /* USER CODE END Includes */

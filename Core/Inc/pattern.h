@@ -1,20 +1,37 @@
 #ifndef _PATTERN_H
 #define _PATTERN_H
 
-typedef struct {
-    float r;       // ∈ [0, 1]
-    float g;       // ∈ [0, 1]
-    float b;       // ∈ [0, 1]
-} rgb;
+#include <stdint.h>
+#include <LEDCtrl.h>
 
 typedef struct {
-	float h;       // ∈ [0, 360]
-	float s;       // ∈ [0, 1]
-    float v;       // ∈ [0, 1]
-} hsv;
+    float fadeInSec;
+    float fadeOutSec;
+    float dwellSec;
+    rgb colors[NUM_LED];
+} frame;
 
-extern const rgb off;
+typedef struct {
+	uint16_t numFrames;
+	frame * frames;
+	float curPatternTimeSec;
+} pattern;
 
-rgb hsv2rgb(hsv HSV);
+typedef struct {
+	uint16_t numPatterns;
+	pattern * patterns;
+	float * ctrlValThresholds;
+} patternSet;
+
+// Global set of patterns loaded into the board
+extern patternSet patterns;
+
+pattern * getCurPattern(float ctrlVal);
+
+float getTotalPatternTime(pattern * in);
+
+rgb * getCurColors(pattern * curPattern);
+
 
 #endif
+
