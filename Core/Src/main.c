@@ -25,6 +25,10 @@
 
 #include <stdbool.h>
 #include <math.h>
+#include <LEDCtrl.h>
+#include <utils.h>
+#include <pattern.h>
+
 
 /* USER CODE END Includes */
 
@@ -64,118 +68,7 @@ static void MX_TIM2_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-typedef struct {
-    float r;       // ∈ [0, 1]
-    float g;       // ∈ [0, 1]
-    float b;       // ∈ [0, 1]
-} rgb;
 
-typedef struct {
-	float h;       // ∈ [0, 360]
-	float s;       // ∈ [0, 1]
-    float v;       // ∈ [0, 1]
-} hsv;
-
-rgb hsv2rgb(hsv HSV)
-{
-    rgb RGB;
-    double H = HSV.h, S = HSV.s, V = HSV.v,
-            P, Q, T,
-            fract;
-
-    (H == 360.)?(H = 0.):(H /= 60.);
-    fract = H - floor(H);
-
-    P = V*(1. - S);
-    Q = V*(1. - S*fract);
-    T = V*(1. - S*(1. - fract));
-
-    if      (0. <= H && H < 1.)
-        RGB = (rgb){.r = V, .g = T, .b = P};
-    else if (1. <= H && H < 2.)
-        RGB = (rgb){.r = Q, .g = V, .b = P};
-    else if (2. <= H && H < 3.)
-        RGB = (rgb){.r = P, .g = V, .b = T};
-    else if (3. <= H && H < 4.)
-        RGB = (rgb){.r = P, .g = Q, .b = V};
-    else if (4. <= H && H < 5.)
-        RGB = (rgb){.r = T, .g = P, .b = V};
-    else if (5. <= H && H < 6.)
-        RGB = (rgb){.r = V, .g = P, .b = Q};
-    else
-        RGB = (rgb){.r = 0., .g = 0., .b = 0.};
-
-    return RGB;
-}
-
-const rgb off = {0,0,0};
-
-
-#define MAX_LED 10
-uint8_t LED_Data[MAX_LED][4];
-
-float cap(float in){
-	if(in > 1.0) return 1.0;
-	if(in < -1.0) return -1.0;
-	return in;
-}
-
-void Set_LED (int LEDnum, rgb in)
-{
-	uint8_t redBits   = round(255.0 * cap(in.r));
-	uint8_t greenBits = round(255.0 * cap(in.g));
-	uint8_t blueBits  = round(255.0 * cap(in.b));
-
-    LED_Data[LEDnum][0] = LEDnum;
-    LED_Data[LEDnum][1] = greenBits;
-    LED_Data[LEDnum][2] = redBits;
-    LED_Data[LEDnum][3] = blueBits;
-}
-
-void Clear_LED(){
-    for(int i = 0; i < MAX_LED; i++){
-        Set_LED(i, off);
-    }
-}
-
-uint16_t pwmData[(24*MAX_LED)+50];
-uint8_t datasentflag = 0;
-
-void WS2812_Send (void)
-{
-    uint32_t indx=0;
-    uint32_t color;
-
-
-    for (int i= 0; i<MAX_LED; i++)
-    {
-
-        color = ((LED_Data[i][1]<<16) | (LED_Data[i][2]<<8) | (LED_Data[i][3]));
-
-        for (int i=23; i>=0; i--)
-        {
-            if (color&(1<<i))
-            {
-                pwmData[indx] = 60;  // 2/3 of 90
-            }
-
-            else pwmData[indx] = 30;  // 1/3 of 90
-
-            indx++;
-        }
-
-    }
-
-    for (int i=0; i<50; i++)
-    {
-        pwmData[indx] = 0;
-        indx++;
-    }
-
-    HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t *)pwmData, indx);
-    while (!datasentflag){};
-    datasentflag = 0;
-}
 
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
 {
