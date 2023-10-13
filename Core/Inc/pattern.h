@@ -8,7 +8,7 @@ typedef struct {
     float fadeInSec;
     float fadeOutSec;
     float dwellSec;
-    rgb colors[NUM_LED];
+    rgb colors[MAX_LED];
 } frame;
 
 typedef struct {

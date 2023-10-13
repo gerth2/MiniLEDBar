@@ -17,8 +17,6 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <colorSpace.h>
-#include <colorSpace.h>
 #include "main.h"
 #include "usb_device.h"
 
@@ -27,7 +25,8 @@
 
 #include <stdbool.h>
 #include <math.h>
-#include <LEDCtrl>
+#include <utils.h>
+#include <LEDCtrl.h>
 
 
 /* USER CODE END Includes */
@@ -68,13 +67,6 @@ static void MX_TIM2_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-
-
-void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
-{
-    HAL_TIM_PWM_Stop_DMA(&htim1, TIM_CHANNEL_1);
-    datasentflag=1;
-}
 
 uint32_t ICValue = 0;
 float Frequency = 0;
@@ -165,30 +157,33 @@ int main(void)
     	ctrlFrac = cap((pulseTime_ms - 1.5) / 0.5);
     }
 
+    ctrlFrac =0.5;
+
 
 
 	Clear_LED();
 	uint8_t redLED = redLEDSequence[redLEDCounter];
 	for(int i = 0; i < MAX_LED; i++){
 
-
-
-		if(i != redLED){
-			Set_LED(i, off);
-		} else {
-			hsv onVal = { 180.0 + 180.0*ctrlFrac, 1.0, 1.0 };
-			Set_LED(i, hsv2rgb(onVal));
+		if(i == redLED){
+			//	hsv onVal = { 180.0 + 180.0*ctrlFrac, 1.0, 1.0 };
+			//	Set_LED(i, hsv2rgb(onVal));
+			Set_LED_Hex(i, 0x55, 0x55, 0x55);
 		}
+
 	}
+
+
+	//Set_LED_Hex(0, 0x55, 0x55, 0x55);
+
 	WS2812_Send();
-	HAL_Delay(10);
+	HAL_Delay(100);
 
-	if(!disabled){
-		redLEDCounter++;
-		if(redLEDCounter >= MAX_LED){
-			redLEDCounter = 0;
-		}
+	redLEDCounter++;
+	if(redLEDCounter >= MAX_LED){
+		redLEDCounter = 0;
 	}
+
 
 
   }
@@ -216,9 +211,9 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 12;
-  RCC_OscInitStruct.PLL.PLLN = 72;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 3;
+  RCC_OscInitStruct.PLL.PLLN = 168;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
+  RCC_OscInitStruct.PLL.PLLQ = 7;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -230,7 +225,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
@@ -261,7 +256,7 @@ static void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 0;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 90;
+  htim1.Init.Period = 100;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
