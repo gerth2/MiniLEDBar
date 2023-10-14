@@ -9,7 +9,15 @@ float cap(float in) {
 }
 
 float map(float in, const float in_min, const float in_max, const float out_min, const float out_max){
-	return out_min + ( (out_max - out_min) * ( (in - in_min)/(in_max - in_min) ) );
+	float ret_val = out_min + ( (out_max - out_min) * ( (in - in_min)/(in_max - in_min) ) );
+
+	if(ret_val > out_max){
+		ret_val = out_max;
+	} else if (ret_val < out_min){
+		ret_val = out_min;
+	}
+
+	return ret_val;
 }
 
 void IIR1(float in, float * out, const float factor ){

@@ -1,7 +1,7 @@
 #include <colorSpace.h>
 #include <math.h>
 
-const rgb_t off = { 0, 0, 0 };
+
 
 rgb_t hsv2rgb(hsv_t HSV) {
 	rgb_t RGB;

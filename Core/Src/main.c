@@ -29,6 +29,8 @@
 #include <LEDCtrl.h>
 #include <pwmIn.h>
 #include <timerEvents.h>
+#include <pattern.h>
+#include <patternDefs.h>
 
 /* USER CODE END Includes */
 
@@ -113,11 +115,13 @@ int main(void) {
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
+
+	// Enabled global state
 	uint8_t blinkCounter = 0;
-	uint8_t ledCirclingCounter = 0;
-	const uint8_t ledCircleSequence[] = { 0, 1, 2, 3, 4, 9, 8, 7, 6, 5 };
 	const uint8_t blinkHalfPeriodLoops = 5;
 	bool colorActive = false;
+
+	startPattern(&disabledPattern);
 
 	while (1) {
 
@@ -132,7 +136,12 @@ int main(void) {
 			Clear_LED();
 
 			if (pwm_isActive()) {
-				//Active control value, use it to drive a pattern
+				//Active control value
+
+				// Reset disabled pattern to start
+				restartPattern();
+
+				// Use ctrl val to change hue/blink
 				float ctrlFrac = pwm_getCtrlVal();
 				float ctrlFracAbs = fabs(ctrlFrac);
 
@@ -154,9 +163,10 @@ int main(void) {
 					}
 
 					//If On, use ctrlFrac to drive what color/pattern
+					const float whiteMax = 0.99;
+					bool isWhite = ctrlFracAbs > whiteMax;
 					float hueCmd = map(ctrlFracAbs, PWM_CTRL_DEADZONE,
-							PWM_CTRL_MAX, HUE_MIN, HUE_MAX);
-					bool isWhite = ctrlFracAbs > 0.99;
+							whiteMax, HUE_MIN, HUE_MAX);
 					float valCmd = colorActive ? 0.5 : 0.0;
 					static float curVal = 0.0;
 					IIR1(valCmd, &curVal, 0.7);
@@ -173,25 +183,11 @@ int main(void) {
 
 			} else {
 				// Inactive control, do a "disabled" pattern
-				uint8_t activeLED = ledCircleSequence[ledCirclingCounter];
+				rgb_t cmds[MAX_LED];
+				getCurColors(cmds);
+
 				for (int i = 0; i < MAX_LED; i++) {
-					hsv_t ledColor;
-					if (i == activeLED) {
-						ledColor.h = 0.0;  //red hue
-						ledColor.s = 1.0;  //very colorful
-						ledColor.v = 0.25; //fairly bright
-					} else {
-						ledColor.h = 0.0; // doesn't matter
-						ledColor.s = 0.0; // pure white
-						ledColor.v = 0.1; //dimmer
-					}
-					Set_LED(i, hsv2rgb(ledColor));
-
-				}
-
-				ledCirclingCounter++;
-				if (ledCirclingCounter >= MAX_LED) {
-					ledCirclingCounter = 0;
+					Set_LED(i, cmds[i]);
 				}
 
 			}

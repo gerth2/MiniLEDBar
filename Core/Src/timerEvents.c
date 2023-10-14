@@ -27,3 +27,7 @@ bool timer_20msTimerTriggered(){
 void timer_reset20msTimer(){
 	tick_20ms_elapsed = false;
 }
+
+float timer_getCurTimeSec(){
+	return ((float)ms_ticks) / 1000.0;
+}

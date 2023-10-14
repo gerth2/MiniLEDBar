@@ -6,7 +6,8 @@
 
 void timer_SysTick_Handler(void);
 
-bool timer_20msTimerTriggered();
-void timer_reset20msTimer();
+bool timer_20msTimerTriggered(void);
+void timer_reset20msTimer(void);
+float timer_getCurTimeSec(void);
 
 #endif
