@@ -31,6 +31,7 @@
 #include <timerEvents.h>
 #include <pattern.h>
 #include <patternDefs.h>
+#include <serialInterface.h>
 
 /* USER CODE END Includes */
 
@@ -193,6 +194,7 @@ int main(void) {
 			}
 
 			WS2812_Send();
+			serial_update();
 			timer_reset20msTimer();
 		}
 
