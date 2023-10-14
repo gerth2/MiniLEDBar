@@ -27,6 +27,8 @@
 #include <math.h>
 #include <utils.h>
 #include <LEDCtrl.h>
+#include <pwmIn.h>
+#include <timerEvents.h>
 
 /* USER CODE END Includes */
 
@@ -66,23 +68,6 @@ static void MX_TIM2_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-static volatile uint32_t ms_ticks = 0;
-static volatile bool tick_1ms_elapsed = false;
-static volatile bool tick_20ms_elapsed = false;
-
-// The interrupt handler for the SysTick module
-void SysTick_Handler(void) {
-	ms_ticks++;
-
-	tick_1ms_elapsed = true;
-
-	if (ms_ticks % 20 == 0) {
-		tick_20ms_elapsed = true;
-	}
-
-	//TODO fix the day-49 bug here where ms_ticks rolls over after 49.7 days of operation
-}
-
 /* USER CODE END 0 */
 
 /**
@@ -108,6 +93,8 @@ int main(void) {
 
 	/* USER CODE BEGIN SysInit */
 
+	pwm_init();
+
 	/* USER CODE END SysInit */
 
 	/* Initialize all configured peripherals */
@@ -126,9 +113,11 @@ int main(void) {
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
-	uint8_t loopCounter = 0;
-	uint8_t redLEDCounter = 0;
-	uint8_t redLEDSequence[] = { 0, 1, 2, 3, 4, 9, 8, 7, 6, 5 };
+	uint8_t blinkCounter = 0;
+	uint8_t ledCirclingCounter = 0;
+	const uint8_t ledCircleSequence[] = { 0, 1, 2, 3, 4, 9, 8, 7, 6, 5 };
+	const uint8_t blinkHalfPeriodLoops = 5;
+	bool colorActive = false;
 
 	while (1) {
 
@@ -136,32 +125,79 @@ int main(void) {
 
 		/* USER CODE BEGIN 3 */
 
-		if (tick_20ms_elapsed) {
+		if (timer_20msTimerTriggered()) {
+			// Code to handle a 20ms event
+
+			// Start by assuming all LED's are off
 			Clear_LED();
 
-			// Back-construct the WPILIB -1.0 to 1.0 range out of pulse time
+			if (pwm_isActive()) {
+				//Active control value, use it to drive a pattern
+				float ctrlFrac = pwm_getCtrlVal();
+				float ctrlFracAbs = fabs(ctrlFrac);
 
-			float ctrlFrac = pwm_getCtrlFrac();
-			;
+				if (ctrlFracAbs < PWM_CTRL_DEADZONE) {
+					//inside deadzone - leds off
+				} else {
 
-			uint8_t redLED = redLEDSequence[redLEDCounter];
-			for (int i = 0; i < MAX_LED; i++) {
+					// Decide if we need the LED's on or off
+					if (ctrlFrac > 0.0) {
+						colorActive = true; //if we're not blinking, we should show a color
+					} else {
+						//if we are blinking, flip the state every few loops
+						if (blinkCounter == blinkHalfPeriodLoops - 1) {
+							colorActive = !colorActive;
+							blinkCounter = 0;
+						} else {
+							blinkCounter++;
+						}
+					}
 
-				if (i == redLED) {
-					hsv onVal = { 180.0 + 180.0 * ctrlFrac, 1.0, 1.0 };
-					Set_LED(i, hsv2rgb(onVal));
+					//If On, use ctrlFrac to drive what color/pattern
+					float hueCmd = map(ctrlFracAbs, PWM_CTRL_DEADZONE,
+							PWM_CTRL_MAX, HUE_MIN, HUE_MAX);
+					bool isWhite = ctrlFracAbs > 0.99;
+					float valCmd = colorActive ? 0.5 : 0.0;
+					static float curVal = 0.0;
+					IIR1(valCmd, &curVal, 0.7);
+
+					hsv_t ledColor;
+					ledColor.h = hueCmd;
+					ledColor.s = isWhite ? 0.0 : 1.0;
+					ledColor.v = curVal;
+					for (int i = 0; i < MAX_LED; i++) {
+						Set_LED(i, hsv2rgb(ledColor));
+					}
+
+				}
+
+			} else {
+				// Inactive control, do a "disabled" pattern
+				uint8_t activeLED = ledCircleSequence[ledCirclingCounter];
+				for (int i = 0; i < MAX_LED; i++) {
+					hsv_t ledColor;
+					if (i == activeLED) {
+						ledColor.h = 0.0;  //red hue
+						ledColor.s = 1.0;  //very colorful
+						ledColor.v = 0.25; //fairly bright
+					} else {
+						ledColor.h = 0.0; // doesn't matter
+						ledColor.s = 0.0; // pure white
+						ledColor.v = 0.1; //dimmer
+					}
+					Set_LED(i, hsv2rgb(ledColor));
+
+				}
+
+				ledCirclingCounter++;
+				if (ledCirclingCounter >= MAX_LED) {
+					ledCirclingCounter = 0;
 				}
 
 			}
 
 			WS2812_Send();
-
-			redLEDCounter++;
-			if (redLEDCounter >= MAX_LED) {
-				redLEDCounter = 0;
-			}
-			loopCounter++;
-
+			timer_reset20msTimer();
 		}
 
 	}

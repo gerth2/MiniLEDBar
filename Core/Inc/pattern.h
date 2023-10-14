@@ -8,7 +8,7 @@ typedef struct {
 	float fadeInSec;
 	float fadeOutSec;
 	float dwellSec;
-	rgb colors[MAX_LED];
+	rgb_t colors[MAX_LED];
 } frame;
 
 typedef struct {
@@ -30,7 +30,7 @@ pattern* getCurPattern(float ctrlVal);
 
 float getTotalPatternTime(pattern *in);
 
-rgb* getCurColors(pattern *curPattern);
+rgb_t* getCurColors(pattern *curPattern);
 
 #endif
 

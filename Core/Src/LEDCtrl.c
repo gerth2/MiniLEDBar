@@ -13,7 +13,7 @@ uint8_t LED_Data[MAX_LED][4];
 uint16_t pwmData[(3 * 8 * MAX_LED) + LOW_TIME_CYCLES];
 uint8_t datasentflag = 0;
 
-void Set_LED(int LEDnum, rgb in) {
+void Set_LED(int LEDnum, rgb_t in) {
 	uint8_t redBits = round(255.0 * cap(in.r));
 	uint8_t greenBits = round(255.0 * cap(in.g));
 	uint8_t blueBits = round(255.0 * cap(in.b));

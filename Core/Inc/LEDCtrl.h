@@ -12,7 +12,7 @@ extern uint8_t datasentflag;
 
 extern TIM_HandleTypeDef htim1; //STM32Cube makes this private, but I want it public
 
-void Set_LED(int LEDnum, rgb in);
+void Set_LED(int LEDnum, rgb_t in);
 void Set_LED_Hex(int LEDnum, uint8_t r, uint8_t g, uint8_t b);
 void Clear_LED();
 void WS2812_Send(void);
