@@ -3,5 +3,4 @@
 
 float cap(float in);
 
-
 #endif

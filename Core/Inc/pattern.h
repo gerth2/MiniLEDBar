@@ -5,33 +5,32 @@
 #include <LEDCtrl.h>
 
 typedef struct {
-    float fadeInSec;
-    float fadeOutSec;
-    float dwellSec;
-    rgb colors[MAX_LED];
+	float fadeInSec;
+	float fadeOutSec;
+	float dwellSec;
+	rgb colors[MAX_LED];
 } frame;
 
 typedef struct {
 	uint16_t numFrames;
-	frame * frames;
+	frame *frames;
 	float curPatternTimeSec;
 } pattern;
 
 typedef struct {
 	uint16_t numPatterns;
-	pattern * patterns;
-	float * ctrlValThresholds;
+	pattern *patterns;
+	float *ctrlValThresholds;
 } patternSet;
 
 // Global set of patterns loaded into the board
 extern patternSet patterns;
 
-pattern * getCurPattern(float ctrlVal);
+pattern* getCurPattern(float ctrlVal);
 
-float getTotalPatternTime(pattern * in);
+float getTotalPatternTime(pattern *in);
 
-rgb * getCurColors(pattern * curPattern);
-
+rgb* getCurColors(pattern *curPattern);
 
 #endif
 
