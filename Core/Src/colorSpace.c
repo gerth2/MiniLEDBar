@@ -31,3 +31,23 @@ rgb_t hsv2rgb(hsv_t HSV) {
 
 	return RGB;
 }
+
+void getInterpolatedColors(rgb_t * first, rgb_t * second, float frac, rgb_t * outColorArr, uint8_t count){
+	if(frac > 1.0) frac = 1.0;
+	if(frac < 0.0) frac = 0.0;
+	
+	for(uint8_t ledIdx = 0; ledIdx < count; ledIdx++){
+		// Linearly interpolate in RGB space
+		outColorArr[ledIdx].r = (1.0 - frac) * first[ledIdx].r + (frac) * second[ledIdx].r ;
+		outColorArr[ledIdx].g = (1.0 - frac) * first[ledIdx].g + (frac) * second[ledIdx].g ;
+		outColorArr[ledIdx].b = (1.0 - frac) * first[ledIdx].b + (frac) * second[ledIdx].b ;
+	}
+}
+
+void copyColors(rgb_t * src, rgb_t * dst, uint8_t count){
+	for(uint8_t ledIdx = 0; ledIdx < count; ledIdx++){
+		dst[ledIdx].r = src[ledIdx].r;
+		dst[ledIdx].g = src[ledIdx].g;
+		dst[ledIdx].b = src[ledIdx].b;
+	}
+}

@@ -1,124 +1,104 @@
-#include <patternDefs.h>
+#include <framePatternDefs.h>
 #include <colorSpace.h>
 
-// Disabled Pattern
-frame_t disabledFrames[] = {
+
+frame_t framePattern1Frames[] = {
 		{
-				0.01, //transitionInSec
-				0.01, //dwellSec
+				3.0, //transitionInSec
+				3.0, //dwellSec
 				{    // colors
-						RGB_OFF,
-						RGB_OFF,
-						RGB_OFF,
-						RGB_OFF,
-						RGB_OFF,
-						RGB_OFF,
-						RGB_OFF,
-						RGB_OFF,
-						RGB_OFF,
-						RGB_OFF,
+						RGB_GREEN,
+						RGB_GREEN,
+						RGB_GREEN,
+						RGB_WHITE,
+						RGB_GREEN,
+						RGB_GREEN,
+						RGB_GREEN,
+						RGB_GREEN,
+						RGB_WHITE,
+						RGB_GREEN,
+						RGB_GREEN,
+						RGB_GREEN,
 				}
 		},
 		{
-				1.0, //transitionInSec
-				0.5, //dwellSec
-				{    // colors
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-				}
-		},
-		{
-				0.05, //transitionInSec
+				3.0, //transitionInSec
 				0.0, //dwellSec
 				{    // colors
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+				}
+		},
+		{
+				3.0, //transitionInSec
+				3.0, //dwellSec
+				{    // colors
+						RGB_GREEN,
+						RGB_GREEN,
+						RGB_RED,
+						RGB_RED,
+						RGB_RED,
+						RGB_GREEN,
+						RGB_GREEN,
+						RGB_RED,
+						RGB_RED,
+						RGB_GREEN,
 						RGB_WHITE,
-						RGB_WHITE,
-						RGB_WHITE,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
 						RGB_RED,
 				}
 		},
 		{
-				0.05, //transitionInSec
+				3.0, //transitionInSec
 				0.0, //dwellSec
 				{    // colors
-						RGB_RED,
-						RGB_RED,
-						RGB_WHITE,
-						RGB_WHITE,
-						RGB_WHITE,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
+						RGB_OFF,
 				}
 		},
 		{
-				0.05, //transitionInSec
+				3.0, //transitionInSec
+				3.0, //dwellSec
+				{    // colors
+						RGB_WHITE,
+						RGB_GREEN,
+						RGB_RED,
+						RGB_GREEN,
+						RGB_RED,
+						RGB_GREEN,
+						RGB_WHITE,
+						RGB_RED,
+						RGB_RED,
+						RGB_GREEN,
+						RGB_RED,
+						RGB_GREEN,
+				}
+		},
+		{
+				3.0, //transitionInSec
 				0.0, //dwellSec
 				{    // colors
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_WHITE,
-						RGB_WHITE,
-						RGB_WHITE,
-				}
-		},
-		{
-				0.05, //transitionInSec
-				0.0, //dwellSec
-				{    // colors
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_WHITE,
-						RGB_WHITE,
-						RGB_WHITE,
-						RGB_RED,
-						RGB_RED,
-				}
-		},
-		{
-				0.05, //transitionInSec
-				1.0, //dwellSec
-				{    // colors
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-						RGB_RED,
-				}
-		},
-		{
-				1.0, //transitionInSec
-				2.0, //dwellSec
-				{    // colors
+						RGB_OFF,
+						RGB_OFF,
 						RGB_OFF,
 						RGB_OFF,
 						RGB_OFF,
@@ -134,7 +114,7 @@ frame_t disabledFrames[] = {
 
 };
 
-pattern_t disabledPattern = {
-		sizeof(disabledFrames)/sizeof(frame_t),// numFrames
-		disabledFrames  // frames
+framePattern_t framePattern1 = {
+		sizeof(framePattern1Frames)/sizeof(frame_t),// numFrames
+		framePattern1Frames  // frames
 };

@@ -1,0 +1,16 @@
+{
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "cmake.configureOnOpen": true,
+  "files.associations": {
+    "pattern.h": "c",
+    "stdint.h": "c",
+    "colorspace.h": "c",
+    "rgrandompattern2.h": "c",
+    "timerevents.h": "c",
+    "pwmin.h": "c",
+    "serialinterface.h": "c",
+    "patternswitcher.h": "c",
+    "framepatterndefs.h": "c",
+    "framepatterns.h": "c"
+  }
+}

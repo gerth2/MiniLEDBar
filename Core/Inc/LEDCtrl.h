@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include "stm32f4xx_hal.h"
 
-#define MAX_LED 10
+#define MAX_LED 12
 
 extern uint16_t pwmData[];
 extern uint8_t datasentflag;

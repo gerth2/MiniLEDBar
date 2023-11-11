@@ -1,5 +1,5 @@
-#ifndef _PATTERN_H
-#define _PATTERN_H
+#ifndef _FRAME_PATTERN_H
+#define _FRAME_PATTERN_H
 
 #include <stdint.h>
 #include <LEDCtrl.h>
@@ -13,21 +13,21 @@ typedef struct {
 typedef struct {
 	uint16_t numFrames;
 	frame_t * frames;
-} pattern_t;
+} framePattern_t;
 
 typedef struct {
 	uint16_t numPatterns;
-	pattern_t *patterns;
+	framePattern_t *patterns;
 	float *ctrlValThresholds;
 } patternSet;
 
 // Global set of patterns loaded into the board
 extern patternSet patterns;
 
-pattern_t* getCurPattern(float ctrlVal);
+framePattern_t* getCurPattern(float ctrlVal);
 
 void getCurColors(rgb_t * outColors);
-void startPattern(pattern_t *newPattern);
+void startPattern(framePattern_t *newPattern);
 void restartPattern();
 
 #endif

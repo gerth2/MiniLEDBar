@@ -29,8 +29,7 @@
 #include <LEDCtrl.h>
 #include <pwmIn.h>
 #include <timerEvents.h>
-#include <pattern.h>
-#include <patternDefs.h>
+#include <patternSwitcher.h>
 #include <serialInterface.h>
 
 /* USER CODE END Includes */
@@ -117,12 +116,7 @@ int main(void) {
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 
-	// Enabled global state
-	uint8_t blinkCounter = 0;
-	const uint8_t blinkHalfPeriodLoops = 5;
-	bool colorActive = false;
-
-	startPattern(&disabledPattern);
+	patternSwitcherInit();
 
 	while (1) {
 
@@ -136,62 +130,14 @@ int main(void) {
 			// Start by assuming all LED's are off
 			Clear_LED();
 
-			if (pwm_isActive()) {
-				//Active control value
+			// Inactive control, do a "disabled" pattern
+			rgb_t cmds[MAX_LED];
+			patternSwitcherUpdate20ms(cmds);
 
-				// Reset disabled pattern to start
-				restartPattern();
-
-				// Use ctrl val to change hue/blink
-				float ctrlFrac = pwm_getCtrlVal();
-				float ctrlFracAbs = fabs(ctrlFrac);
-
-				if (ctrlFracAbs < PWM_CTRL_DEADZONE) {
-					//inside deadzone - leds off
-				} else {
-
-					// Decide if we need the LED's on or off
-					if (ctrlFrac > 0.0) {
-						colorActive = true; //if we're not blinking, we should show a color
-					} else {
-						//if we are blinking, flip the state every few loops
-						if (blinkCounter == blinkHalfPeriodLoops - 1) {
-							colorActive = !colorActive;
-							blinkCounter = 0;
-						} else {
-							blinkCounter++;
-						}
-					}
-
-					//If On, use ctrlFrac to drive what color/pattern
-					const float whiteMax = 0.99;
-					bool isWhite = ctrlFracAbs > whiteMax;
-					float hueCmd = map(ctrlFracAbs, PWM_CTRL_DEADZONE,
-							whiteMax, HUE_MIN, HUE_MAX);
-					float valCmd = colorActive ? 0.5 : 0.0;
-					static float curVal = 0.0;
-					IIR1(valCmd, &curVal, 0.7);
-
-					hsv_t ledColor;
-					ledColor.h = hueCmd;
-					ledColor.s = isWhite ? 0.0 : 1.0;
-					ledColor.v = curVal;
-					for (int i = 0; i < MAX_LED; i++) {
-						Set_LED(i, hsv2rgb(ledColor));
-					}
-
-				}
-
-			} else {
-				// Inactive control, do a "disabled" pattern
-				rgb_t cmds[MAX_LED];
-				getCurColors(cmds);
-
-				for (int i = 0; i < MAX_LED; i++) {
-					Set_LED(i, cmds[i]);
-				}
-
+			for (int i = 0; i < MAX_LED; i++) {
+				Set_LED(i, cmds[i]);
 			}
+
 
 			WS2812_Send();
 			serial_update();
