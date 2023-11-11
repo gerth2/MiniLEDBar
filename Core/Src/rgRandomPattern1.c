@@ -30,8 +30,8 @@ float transFracs;
 
 ledState_t ledStates[MAX_LED] = {STATE_OFF};
 
-float stateStartTime = 0;
-patternState_t curPatternState = INIT;
+static float stateStartTime = 0;
+static patternState_t curPatternState = INIT;
 
 bool getRandBool(float prob_true){
 	int thresh = (prob_true) * RAND_MAX;
