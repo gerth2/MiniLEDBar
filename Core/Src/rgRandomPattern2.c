@@ -18,7 +18,7 @@ void getRgRandomPatternColors2(rgb_t * outColors){
 		float phaseShift1 = 0.3;  // Adjust the phase shift of the red color component
 		float phaseShift2 = 0.37;  // Adjust the phase shift of the green color component
 
-		float amplitude = 0.35;  // Adjust the amplitude of the color components
+		float amplitude = ON;  // Adjust the amplitude of the color components
 
 		// Calculate color components using sine functions
 		float time = timer_getCurTimeSec();
@@ -29,16 +29,6 @@ void getRgRandomPatternColors2(rgb_t * outColors){
 		if(red < 0.00001 && green < 0.00001){
 			isUsingRed[i] = !isUsingRed[i];
 		}
-
-		// Ensure that red and green are not active simultaneously
-		//if (red > green) {
-		//	green = inactiveColor;
-		//} else {
-		//	red = inactiveColor;
-		//}
-
-		// Optionally, you can add some randomness to each color component
-		// For example: red += rand() % 20 - 10;
 
 		// Return the generated color
 		outColors[i].r = isUsingRed[i] ? red : 0.0;

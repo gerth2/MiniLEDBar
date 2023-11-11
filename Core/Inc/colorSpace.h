@@ -7,7 +7,7 @@
 #define HUE_MAX 360.0
 #define HUE_MIN 0.0
 
-#define ON 0.25
+#define ON 0.20
 
 #define RGB_OFF  { 0, 0, 0 }
 #define RGB_RED { ON, 0, 0 }

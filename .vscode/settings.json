@@ -11,6 +11,9 @@
     "serialinterface.h": "c",
     "patternswitcher.h": "c",
     "framepatterndefs.h": "c",
-    "framepatterns.h": "c"
+    "framepatterns.h": "c",
+    "stdlib.h": "c",
+    "stdbool.h": "c",
+    "rgsparkle.h": "c"
   }
 }

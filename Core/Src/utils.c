@@ -1,4 +1,6 @@
 #include <utils.h>
+#include <stdbool.h>
+#include <stdlib.h>
 
 float cap(float in) {
 	if (in > 1.0)
@@ -26,4 +28,9 @@ void IIR1(float in, float * out, const float factor ){
 	// After it is called, out will have the current output
 	float prevOut = *out;
 	*out = (1.0 - factor)*prevOut + factor * in;
+}
+
+bool getRandBool(float prob_true){
+	int thresh = (prob_true) * RAND_MAX;
+	return rand() < thresh;
 }

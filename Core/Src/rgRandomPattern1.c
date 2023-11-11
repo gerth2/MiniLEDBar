@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <colorSpace.h>
 #include <LEDCtrl.h>
-#include <stdlib.h>
+#include <utils.h>
 
 typedef enum {
   STATE_OFF,
@@ -33,11 +33,6 @@ ledState_t ledStates[MAX_LED] = {STATE_OFF};
 static float stateStartTime = 0;
 static patternState_t curPatternState = INIT;
 
-bool getRandBool(float prob_true){
-	int thresh = (prob_true) * RAND_MAX;
-	return rand() < thresh;
-}
-
 void seedRGPatterns1(){
 	for(int i = 0; i < MAX_LED; i++){
 		ledStates[i] = getRandBool(0.5) ? STATE_TRANS_OFF_TO_RED : STATE_TRANS_OFF_TO_GREEN;
@@ -45,7 +40,7 @@ void seedRGPatterns1(){
 	stateStartTime = timer_getCurTimeSec();
 }
 
-#define TRANS_TIME 2.0
+#define TRANS_TIME 1.5
 #define HOLD_TIME 3.0
 
 
@@ -78,10 +73,10 @@ void getRgRandomPatternColors1(rgb_t * outColors){
 				stateStartTime = timer_getCurTimeSec();
 				timeInState = 0;
 				for(int i = 0; i < MAX_LED; i++){
-					if(ledStates[i] == STATE_RED && getRandBool(0.1)){
+					if(ledStates[i] == STATE_RED && getRandBool(0.2)){
 						ledStates[i] = STATE_TRANS_RED_TO_OFF;
 					}
-					if(ledStates[i] == STATE_GREEN && getRandBool(0.1)){
+					if(ledStates[i] == STATE_GREEN && getRandBool(0.2)){
 						ledStates[i] = STATE_TRANS_GREEN_TO_OFF;
 					}
 				}

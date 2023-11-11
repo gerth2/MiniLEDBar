@@ -4,6 +4,8 @@
 #include <framePatternDefs.h>
 #include <rgRandomPattern1.h>
 #include <rgRandomPattern2.h>
+#include <rgRandomPattern3.h>
+#include <rgSparkle.h>
 #include <colorSpace.h>
 #include <timerEvents.h>
 
@@ -18,10 +20,10 @@ typedef enum {
 static float stateStartTime = 0;
 static switcherState_t curState = FADE_IN;
 
-#define RUN_TIME_SEC 10.0
-#define FADE_TIME_SEC 3
+#define RUN_TIME_SEC 60.0
+#define FADE_TIME_SEC 4.0
 
-#define NUM_PATTERNS 2
+#define NUM_PATTERNS 4
 
 rgb_t curPatternOutput[MAX_LED];
 
@@ -44,10 +46,16 @@ void patternSwitcherUpdate20ms(rgb_t * outColors){
     //First, step forward whatever pattern is running
     switch(patternIdx){
         case 0:
-            getRgRandomPatternColors1(curPatternOutput);
+            getRgSparkleColors(curPatternOutput);
         break;
         case 1:
+            getRgRandomPatternColors1(curPatternOutput);
+        break;
+        case 2:
             getRgRandomPatternColors2(curPatternOutput);
+        break;
+        case 3:
+            getRgRandomPatternColors3(curPatternOutput);
         break;
     }
 
