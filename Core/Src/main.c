@@ -29,8 +29,6 @@
 #include <LEDCtrl.h>
 #include <pwmIn.h>
 #include <timerEvents.h>
-#include <pattern.h>
-#include <patternDefs.h>
 #include <serialInterface.h>
 
 /* USER CODE END Includes */
@@ -121,8 +119,8 @@ int main(void) {
 	uint8_t blinkCounter = 0;
 	const uint8_t blinkHalfPeriodLoops = 5;
 	bool colorActive = false;
+	float curTime = 0;
 
-	startPattern(&disabledPattern);
 
 	while (1) {
 
@@ -130,17 +128,17 @@ int main(void) {
 
 		/* USER CODE BEGIN 3 */
 
+
 		if (timer_20msTimerTriggered()) {
 			// Code to handle a 20ms event
+
+			curTime += 0.02;
 
 			// Start by assuming all LED's are off
 			Clear_LED();
 
 			if (pwm_isActive()) {
 				//Active control value
-
-				// Reset disabled pattern to start
-				restartPattern();
 
 				// Use ctrl val to change hue/blink
 				float ctrlFrac = pwm_getCtrlVal();
@@ -168,7 +166,7 @@ int main(void) {
 					bool isWhite = ctrlFracAbs > whiteMax;
 					float hueCmd = map(ctrlFracAbs, PWM_CTRL_DEADZONE,
 							whiteMax, HUE_MIN, HUE_MAX);
-					float valCmd = colorActive ? 0.5 : 0.0;
+					float valCmd = colorActive ? 1.0 : 0.0;
 					static float curVal = 0.0;
 					IIR1(valCmd, &curVal, 0.7);
 
@@ -183,12 +181,22 @@ int main(void) {
 				}
 
 			} else {
-				// Inactive control, do a "disabled" pattern
-				rgb_t cmds[MAX_LED];
-				getCurColors(cmds);
+				// Inactive control, do a "disabled" pattern - dual cylon
 
-				for (int i = 0; i < MAX_LED; i++) {
-					Set_LED(i, cmds[i]);
+				for (int i = 0; i < MAX_LED/2; i++) {
+					hsv_t ledColor;
+
+					float pattern = sinf(2.0*3.14159*0.5*(curTime + i*0.25));
+					//pattern = powf(pattern,2) * (pattern > 0 ? 1.0 : -1.0);
+					pattern = MAX(0.0, pattern);
+
+					ledColor.h = 0.0; // pure red hue
+					ledColor.s = 1.0-pattern;
+					ledColor.v = 1.0;
+
+					Set_LED(i, hsv2rgb(ledColor));
+					Set_LED(MAX_LED-i-1, hsv2rgb(ledColor));
+
 				}
 
 			}
